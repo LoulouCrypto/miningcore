@@ -2178,76 +2178,6 @@
         "explorerTxLink": "https://explorer.raptoreum.com/tx/{0}",
         "explorerAccountLink": "https://explorer.raptoreum.com/address/{0}"
     },
-    "geckocoin": {
-        "name": "Geckocoin",
-        "canonicalName": "Geckocoin",
-        "symbol": "GEC",
-        "family": "bitcoin",
-        "website": "https://gecko.mn/",
-        "market": "https://www.coingecko.com/en/coins/geckocoin",
-        "twitter": "https://twitter.com/geckocoin_mn",
-        "telegram": "",
-        "discord": "https://discord.gg/YVkgrSkQCS",
-        "coinbaseHasher": {
-            "hash": "sha256d"
-        },
-        "headerHasher": {
-            "hash": "ghostrider"
-        },
-        "blockHasher": {
-            "hash": "reverse",
-            "args": [
-                {
-                    "hash": "sha256d"
-                }
-                    ]
-        },
-        "hasFounderFee": true,
-        "hasMasterNodes": true,
-        "HasSmartNodes": true,
-        "foundersRewardAddress": [
-            "Gg4bypdnAPRoMuhfquePZBWegLn5vRUZJw"
-        ],
-        "shareMultiplier": 65536,
-        "explorerBlockLink": "https://block.gecko.mn/block/$height$",
-        "explorerTxLink": "https://block.gecko.mn/tx/{0}",
-        "explorerAccountLink": "https://block.gecko.mn/address/{0}"
-    },
-    "babacoin": {
-        "name": "Babacoin",
-        "canonicalName": "Babacoin",
-        "symbol": "BBC",
-        "family": "bitcoin",
-        "website": "https://www.babacoin.network/",
-        "market": "https://www.coingecko.com/en/coins/babacoin",
-        "twitter": "https://twitter.com/babacoinbbc",
-        "telegram": "",
-        "discord": "https://discord.gg/U4Z8znMV",
-        "coinbaseHasher": {
-            "hash": "sha256d"
-        },
-        "headerHasher": {
-            "hash": "ghostrider"
-        },
-        "blockHasher": {
-            "hash": "reverse",
-            "args": [
-                {
-                    "hash": "sha256d"
-                }
-                    ]
-        },
-        "hasFounderFee": true,
-        "hasMasterNodes": true,
-        "HasSmartNodes": true,
-        "foundersRewardAddress": [
-            "BLbWwABzjJGsSeibe6oJvTK5aEq8Sx7rU9"
-        ],
-        "shareMultiplier": 65536,
-        "explorerBlockLink": "https://explorer.babacoin.network/block/$height$",
-        "explorerTxLink": "https://explorer.babacoin.network/tx/{0}",
-        "explorerAccountLink": "https://explorer.babacoin.network/address/{0}"
-    },
     "gspcoin": {
         "name": "Gsp Coin",
         "canonicalName": "GspCoin",
@@ -2273,7 +2203,6 @@
         },
         "hasFounderFee": true,
         "hasMasterNodes": true,
-        "HasSmartNodes": true,
         "foundersRewardAddress": [
             "GZBNAiLokyYvSwNLftReXuYbvdmzNoorGj"
         ],
@@ -3430,7 +3359,7 @@
         },
         "hasFounderFee": true,
         "hasMasterNodes": true,
-        "HasSmartNodes": true,
+        "hasSmartNodes": true,
         "shareMultiplier": 65536,
         "explorerBlockLink": "https://explorer.yerbas.org/block/$height$",
         "explorerTxLink": "https://explorer.yerbas.org/tx/{0}",
@@ -4437,40 +4366,6 @@
         },
         "explorerTxLink": "https://pinkscan.org/tx/{0}",
         "explorerAccountLink": "https://pinkscan.org/address/{0}"
-    },
-    "florachain": {
-        "name": "FloraChain",
-        "canonicalName": "FloraChain",
-        "symbol": "FLR",
-        "family": "ethereum",
-        "website": "https://florachain.org/",
-        "market": "",
-        "twitter": "https://twitter.com/FloraChain",
-        "telegram": "https://t.me/FloraChain_Chat",
-        "discord": "https://discord.gg/58DS5WCunz",
-        "explorerBlockLinks": {
-            "block": "https://florascan.io/block/$height$",
-            "uncle": "https://florascan.io/uncle/$height$"
-        },
-        "explorerTxLink": "https://florascan.io/tx/{0}",
-        "explorerAccountLink": "https://florascan.io/address/{0}"
-    },
-    "avescoin": {
-        "name": "Aves",
-        "canonicalName": "Aves",
-        "symbol": "AVS",
-        "family": "ethereum",
-        "website": "https://avescoin.io/",
-        "market": "",
-        "twitter": "",
-        "telegram": "",
-        "discord": "https://discord.gg/NDhQBnWBVY",
-        "explorerBlockLinks": {
-            "block": "https://avescan.io/block/$height$",
-            "uncle": "https://avescan.io/uncle/$height$"
-        },
-        "explorerTxLink": "https://avescan.io/tx/{0}",
-        "explorerAccountLink": "https://avescan.io/address/{0}"
     },
     "ubiq": {
         "name": "Ubiq",
