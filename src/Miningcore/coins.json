@@ -3565,8 +3565,8 @@
                 "solver": {
                     "hash": "equihash",
                     "args": [
-                        144,
-                        5,
+                        125,
+                        4,
                         "BgoldPoW"
                     ]
                 },
@@ -3580,8 +3580,8 @@
                 "solver": {
                     "hash": "equihash",
                     "args": [
-                        144,
-                        5,
+                        125,
+                        4,
                         "BgoldPoW"
                     ]
                 },
@@ -3595,8 +3595,8 @@
                 "solver": {
                     "hash": "equihash",
                     "args": [
-                        144,
-                        5,
+                        125,
+                        4,
                         "BgoldPoW"
                     ]
                 },
