@@ -141,6 +141,9 @@ public static unsafe class Multihash
 
     [DllImport("libmultihash", EntryPoint = "equihash_verify_144_5_export", CallingConvention = CallingConvention.Cdecl)]
     public static extern bool equihash_verify_144_5(byte* header, int headerLength, byte* solution, int solutionLength, string personalization);
+   
+    [DllImport("libmultihash", EntryPoint = "equihash_verify_125_5_export", CallingConvention = CallingConvention.Cdecl)]
+    public static extern bool equihash_verify_125_5(byte* header, int headerLength, byte* solution, int solutionLength, string personalization);
 
     [DllImport("libmultihash", EntryPoint = "equihash_verify_96_5_export", CallingConvention = CallingConvention.Cdecl)]
     public static extern bool equihash_verify_96_5(byte* header, int headerLength, byte* solution, int solutionLength, string personalization);
