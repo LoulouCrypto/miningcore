@@ -205,6 +205,39 @@ public class RavencoinJob : BitcoinJob
         this.extraNoncePlaceHolderLength = RavencoinConstants.ExtranoncePlaceHolderLength;
         this.shareMultiplier = shareMultiplier;
 
+                txComment = !string.IsNullOrEmpty(extraPoolConfig?.CoinbaseTxComment) ?
+            extraPoolConfig.CoinbaseTxComment : coin.CoinbaseTxComment;
+
+        if(coin.HasMasterNodes)
+        {
+            masterNodeParameters = BlockTemplate.Extra.SafeExtensionDataAs<MasterNodeBlockTemplateExtra>();
+
+           // if(coin.HasSmartNodes || (coin.Symbol == "BBC") || (coin.Symbol == "GEC") || (coin.Symbol == "GSPC"))
+           if(coin.HasSmartNodes)
+            {
+                if(masterNodeParameters.Extra?.ContainsKey("smartnode") == true)
+                {
+                    masterNodeParameters.Masternode = JToken.FromObject(masterNodeParameters.Extra["smartnode"]);
+                }
+            }
+
+            if(!string.IsNullOrEmpty(masterNodeParameters.CoinbasePayload))
+            {
+                txVersion = 3;
+                const uint txType = 5;
+                txVersion += txType << 16;
+            }
+        }
+
+        if(coin.HasPayee)
+            payeeParameters = BlockTemplate.Extra.SafeExtensionDataAs<PayeeBlockTemplateExtra>();
+
+        if(coin.HasFounderFee)
+            founderParameters = BlockTemplate.Extra.SafeExtensionDataAs<FounderBlockTemplateExtra>();
+
+        if(coin.HasMinerFund)
+            minerFundParameters = BlockTemplate.Extra.SafeExtensionDataAs<MinerFundTemplateExtra>("coinbasetxn", "minerfund");
+
         this.coinbaseHasher = coinbaseHasher;
         this.headerHasher = headerHasher;
         this.kawpowHasher = kawpowHasher;
