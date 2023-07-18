@@ -61,7 +61,7 @@ public class RavencoinJob : BitcoinJob
         var coinbase = SerializeCoinbase(extraNonce1);
         Span<byte> coinbaseHash = stackalloc byte[32];
         coinbaseHasher.Digest(coinbase, coinbaseHash);
-
+        
         // hash block-header
         var headerBytes = SerializeHeader(coinbaseHash);
         Span<byte> headerHash = stackalloc byte[32];
