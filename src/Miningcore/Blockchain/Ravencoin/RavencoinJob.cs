@@ -19,16 +19,16 @@ namespace Miningcore.Blockchain.Ravencoin;
 
 public class RavencoinJobParams
 {
-    public ulong Height { get; set; }
+    public ulong Height { get; init; }
     public bool CleanJobs { get; set; }
 }
 
 public class RavencoinJob : BitcoinJob
 {
-    protected Cache kawpowHasher;
-    protected new RavencoinJobParams jobParams;
+    private Cache kawpowHasher;
+    private new RavencoinJobParams jobParams;
 
-    protected byte[] SerializeHeader(Span<byte> coinbaseHash)
+    private byte[] SerializeHeader(Span<byte> coinbaseHash)
     {
         // build merkle-root
         var merkleRoot = mt.WithFirst(coinbaseHash.ToArray());
@@ -51,7 +51,7 @@ public class RavencoinJob : BitcoinJob
         return blockHeader.ToBytes();
     }
 
-    protected virtual (Share Share, string BlockHex) ProcessShareInternal(ILogger logger,
+    public (Share Share, string BlockHex) ProcessShareInternal(ILogger logger,
         StratumConnection worker, ulong nonce, string inputHeaderHash, string mixHash)
     {
         var context = worker.ContextAs<RavencoinWorkerContext>();
@@ -61,23 +61,23 @@ public class RavencoinJob : BitcoinJob
         var coinbase = SerializeCoinbase(extraNonce1);
         Span<byte> coinbaseHash = stackalloc byte[32];
         coinbaseHasher.Digest(coinbase, coinbaseHash);
-        
+
         // hash block-header
         var headerBytes = SerializeHeader(coinbaseHash);
         Span<byte> headerHash = stackalloc byte[32];
         headerHasher.Digest(headerBytes, headerHash);
         headerHash.Reverse();
 
-        var headerValue = new uint256(headerHash);
         var headerHashHex = headerHash.ToHexString();
 
         if(headerHashHex != inputHeaderHash)
-        {
-            throw new StratumException(StratumError.MinusOne, "bad header-hash");
-        }
+            throw new StratumException(StratumError.MinusOne, $"bad header-hash");
 
         if(!kawpowHasher.Compute(logger, (int) BlockTemplate.Height, headerHash.ToArray(), nonce, out var mixHashOut, out var resultBytes))
             throw new StratumException(StratumError.MinusOne, "bad hash");
+
+        if(mixHash != mixHashOut.ToHexString())
+            throw new StratumException(StratumError.MinusOne, $"bad mix-hash");
 
         resultBytes.ReverseInPlace();
         mixHashOut.ReverseInPlace();
@@ -118,25 +118,25 @@ public class RavencoinJob : BitcoinJob
             Difficulty = stratumDifficulty / shareMultiplier,
         };
 
-        if(isBlockCandidate)
+        if(!isBlockCandidate)
         {
-            result.IsBlockCandidate = true;
-            result.BlockHash = resultBytes.ReverseInPlace().ToHexString();
-
-            var blockBytes = SerializeBlock(headerBytes, coinbase, nonce, mixHashOut);
-            var blockHex = blockBytes.ToHexString();
-
-            return (result, blockHex);
+            return (result, null);
         }
 
-        return (result, null);
+        result.IsBlockCandidate = true;
+        result.BlockHash = resultBytes.ReverseInPlace().ToHexString();
+
+        var blockBytes = SerializeBlock(headerBytes, coinbase, nonce, mixHashOut);
+        var blockHex = blockBytes.ToHexString();
+
+        return (result, blockHex);
     }
 
-    protected virtual byte[] SerializeCoinbase(string extraNonce1)
+    private byte[] SerializeCoinbase(string extraNonce1)
     {
         var extraNonce1Bytes = extraNonce1.HexToByteArray();
 
-        using(var stream = new MemoryStream())
+        using var stream = new MemoryStream();
         {
             stream.Write(coinbaseInitial);
             stream.Write(extraNonce1Bytes);
@@ -146,12 +146,12 @@ public class RavencoinJob : BitcoinJob
         }
     }
 
-    protected virtual byte[] SerializeBlock(byte[] header, byte[] coinbase, ulong nonce, byte[] mixHash)
+    private byte[] SerializeBlock(byte[] header, byte[] coinbase, ulong nonce, byte[] mixHash)
     {
         var rawTransactionBuffer = BuildRawTransactionBuffer();
         var transactionCount = (uint) BlockTemplate.Transactions.Length + 1; // +1 for prepended coinbase tx
 
-        using(var stream = new MemoryStream())
+        using var stream = new MemoryStream();
         {
             var bs = new BitcoinStream(stream, true);
 
@@ -197,7 +197,8 @@ public class RavencoinJob : BitcoinJob
         var coinbaseString = !string.IsNullOrEmpty(cc.PaymentProcessing?.CoinbaseString) ?
             cc.PaymentProcessing?.CoinbaseString.Trim() : "Miningcore";
 
-        this.scriptSigFinalBytes = new Script(Op.GetPushOp(Encoding.UTF8.GetBytes(coinbaseString))).ToBytes();
+        if(!string.IsNullOrEmpty(coinbaseString))
+            this.scriptSigFinalBytes = new Script(Op.GetPushOp(Encoding.UTF8.GetBytes(coinbaseString))).ToBytes();
 
         this.Difficulty = new Target(System.Numerics.BigInteger.Parse(BlockTemplate.Target, NumberStyles.HexNumber)).Difficulty;
 
@@ -232,7 +233,7 @@ public class RavencoinJob : BitcoinJob
         return jobParams;
     }
 
-    public virtual void PrepareWorkerJob(RavencoinWorkerJob workerJob, out string headerHash)
+    public void PrepareWorkerJob(RavencoinWorkerJob workerJob, out string headerHash)
     {
         workerJob.Job = this;
         workerJob.Height = BlockTemplate.Height;
@@ -241,13 +242,13 @@ public class RavencoinJob : BitcoinJob
         headerHash = CreateHeaderHash(workerJob);
     }
 
-    protected virtual string CreateHeaderHash(RavencoinWorkerJob workerJob)
+    private string CreateHeaderHash(RavencoinWorkerJob workerJob)
     {
         var headerHasher = coin.HeaderHasherValue;
         var coinbaseHasher = coin.CoinbaseHasherValue;
         var extraNonce1 = workerJob.ExtraNonce1;
 
-        var coinbase = SerializeCoinbase(workerJob.ExtraNonce1);
+        var coinbase = SerializeCoinbase(extraNonce1);
         Span<byte> coinbaseHash = stackalloc byte[32];
         coinbaseHasher.Digest(coinbase, coinbaseHash);
 
@@ -259,29 +260,6 @@ public class RavencoinJob : BitcoinJob
         return headerHash.ToHexString();
     }
 
-    public virtual (Share Share, string BlockHex) ProcessShare(ILogger logger, StratumConnection worker, string nonce, string headerHash, string mixHash)
-    {
-        Contract.RequiresNonNull(worker);
-        Contract.Requires<ArgumentException>(!string.IsNullOrEmpty(nonce));
-
-        var context = worker.ContextAs<RavencoinWorkerContext>();
-
-        // mixHash
-        if(mixHash.Length != 64)
-            throw new StratumException(StratumError.Other, $"incorrect size of mixHash: {mixHash}");
-
-        // validate nonce
-        if(nonce.Length != 16)
-            throw new StratumException(StratumError.Other, $"incorrect size of nonce: {nonce}");
-
-        // check if nonce is within range
-        if(nonce.IndexOf(context.ExtraNonce1.Substring(0, 4)) != 0)
-            throw new StratumException(StratumError.Other, $"nonce out of range: {nonce}");
-
-        var nonceLong = ulong.Parse(nonce, NumberStyles.HexNumber);
-
-        return ProcessShareInternal(logger, worker, nonceLong, headerHash, mixHash);
-    }
 
     #endregion // API-Surface
 }
