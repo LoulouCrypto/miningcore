@@ -12,6 +12,7 @@ using Miningcore.Time;
 using Miningcore.Util;
 using NBitcoin;
 using NBitcoin.DataEncoders;
+using Newtonsoft.Json.Linq;
 using NLog;
 using Contract = Miningcore.Contracts.Contract;
 
@@ -204,6 +205,32 @@ public class RavencoinJob : BitcoinJob
 
         this.extraNoncePlaceHolderLength = RavencoinConstants.ExtranoncePlaceHolderLength;
         this.shareMultiplier = shareMultiplier;
+
+        if(coin.HasMasterNodes)
+        {
+            masterNodeParameters = BlockTemplate.Extra.SafeExtensionDataAs<MasterNodeBlockTemplateExtra>();
+
+            if(coin.HasSmartNodes)
+            {
+                if(masterNodeParameters.Extra?.ContainsKey("smartnode") == true)
+                {
+                    masterNodeParameters.Masternode = JToken.FromObject(masterNodeParameters.Extra["smartnode"]);
+                }
+            }
+
+            if(!string.IsNullOrEmpty(masterNodeParameters.CoinbasePayload))
+            {
+                txVersion = 3;
+                const uint txType = 5;
+                txVersion += txType << 16;
+            }
+        }
+
+        if(coin.HasPayee)
+            payeeParameters = BlockTemplate.Extra.SafeExtensionDataAs<PayeeBlockTemplateExtra>();
+
+        if(coin.HasFounderFee)
+            founderParameters = BlockTemplate.Extra.SafeExtensionDataAs<FounderBlockTemplateExtra>();
 
         this.coinbaseHasher = coinbaseHasher;
         this.headerHasher = headerHasher;
