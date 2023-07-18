@@ -2320,6 +2320,32 @@
         "explorerTxLink": "https://ravencoin.network/rvn/transaction/{0}",
         "explorerAccountLink": "https://ravencoin.network/rvn/address/{0}"
     },
+    "neoxa": {
+        "name": "Neoxa",
+        "symbol": "NEOX",
+        "family": "bitcoin",
+        "website": "https://neoxa.net/",
+        "market": "https://www.coingecko.com/fr/pi%C3%A8ces/neoxa",
+        "twitter": "https://twitter.com/NeoxaNet",
+        "telegram": "https://t.me/Neoxanet",
+        "discord": "https://discord.gg/jduUnsPg",
+        "coinbaseHasher": {
+            "hash": "sha256d"
+        },
+        "headerHasher": {
+            "hash": "sha256d"
+        },
+        "hasFounderFee": true,
+        "hasMasterNodes": true,
+        "hasSmartNodes": true,
+        "foundersRewardAddress": [
+            "GTbBCJzqRWyFBMrap2fY39eZaXnLnojJ3F"
+        ],
+        "shareMultiplier": 1,
+        "explorerBlockLink": "https://explorer.neoxa.net/block/$hash$",
+        "explorerTxLink": "https://explorer.neoxa.net/tx/{0}",
+        "explorerAccountLink": "https://explorer.neoxa.net/address/{0}"
+    },
     "novo": {
       "name": "Novo",
       "symbol": "NOVO",
@@ -2334,9 +2360,9 @@
         "hash": "reverse",
         "args": [ { "hash": "sha256dt" } ]
       },
-      "explorerBlockLink": "https://explorer.novochain.ovh/block/$height$",
-      "explorerTxLink": "https://explorer.novochain.ovh/tx/{0}",
-      "explorerAccountLink": "https://explorer.novochain.ovh/address/{0}"
+      "explorerBlockLink": "https://novoexplorer.com/block/$height$",
+      "explorerTxLink": "https://novoexplorer.com/tx/{0}",
+      "explorerAccountLink": "https://novoexplorer.com/address/{0}"
     },
     "bitoreum": {
         "name": "Bitoreum",
