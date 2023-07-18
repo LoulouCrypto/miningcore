@@ -166,122 +166,8 @@ public class RavencoinJob : BitcoinJob
             return stream.ToArray();
         }
     }
-    #region Masternodes
 
-    protected MasterNodeBlockTemplateExtra masterNodeParameters;
-
-    protected virtual Money CreateMasternodeOutputs(Transaction tx, Money reward)
-    {
-        if(masterNodeParameters.Masternode != null)
-        {
-            Masternode[] masternodes;
-
-            // Dash v13 Multi-Master-Nodes
-            if(masterNodeParameters.Masternode.Type == JTokenType.Array)
-                masternodes = masterNodeParameters.Masternode.ToObject<Masternode[]>();
-            else
-                masternodes = new[] { masterNodeParameters.Masternode.ToObject<Masternode>() };
-
-            if(masternodes != null)
-            {
-                foreach(var masterNode in masternodes)
-                {
-                    if(!string.IsNullOrEmpty(masterNode.Payee))
-                    {
-                        var payeeDestination = BitcoinUtils.AddressToDestination(masterNode.Payee, network);
-                        var payeeReward = masterNode.Amount;
-
-                        tx.Outputs.Add(payeeReward, payeeDestination);
-                        reward -= payeeReward;
-                    }
-                }
-            }
-        }
-
-        if(masterNodeParameters.SuperBlocks is { Length: > 0 })
-        {
-            foreach(var superBlock in masterNodeParameters.SuperBlocks)
-            {
-                var payeeAddress = BitcoinUtils.AddressToDestination(superBlock.Payee, network);
-                var payeeReward = superBlock.Amount;
-
-                tx.Outputs.Add(payeeReward, payeeAddress);
-                reward -= payeeReward;
-            }
-        }
-
-        if(!coin.HasPayee && !string.IsNullOrEmpty(masterNodeParameters.Payee))
-        {
-            var payeeAddress = BitcoinUtils.AddressToDestination(masterNodeParameters.Payee, network);
-            var payeeReward = masterNodeParameters.PayeeAmount;
-
-            tx.Outputs.Add(payeeReward, payeeAddress);
-            reward -= payeeReward;
-        }
-
-        return reward;
-    }
-
-    #endregion // Masternodes
-
-    #region Founder
-
-    protected FounderBlockTemplateExtra founderParameters;
-
-    protected virtual Money CreateFounderOutputs(Transaction tx, Money reward)
-    {
-        if(founderParameters.Founder != null)
-        {
-            Founder[] founders;
-            if(founderParameters.Founder.Type == JTokenType.Array)
-                founders = founderParameters.Founder.ToObject<Founder[]>();
-            else
-                founders = new[] { founderParameters.Founder.ToObject<Founder>() };
-
-            if(founders != null)
-            {
-                foreach(var Founder in founders)
-                {
-                    if(!string.IsNullOrEmpty(Founder.Payee))
-                    {
-                        var payeeAddress = BitcoinUtils.AddressToDestination(Founder.Payee, network);
-                        var payeeReward = Founder.Amount;
-
-                        tx.Outputs.Add(payeeReward, payeeAddress);
-                        reward -= payeeReward;
-                    }
-                }
-            }
-        }
-
-        return reward;
-    }
-
-    #endregion // Founder
-
-    #region Minerfund
-
-    protected MinerFundTemplateExtra minerFundParameters;
-
-    protected virtual Money CreateMinerFundOutputs(Transaction tx, Money reward)
-    {
-        var payeeReward = minerFundParameters.MinimumValue;
-
-        if(!string.IsNullOrEmpty(minerFundParameters.Addresses?.FirstOrDefault()))
-        {
-            var payeeAddress = BitcoinUtils.AddressToDestination(minerFundParameters.Addresses[0], network);
-            tx.Outputs.Add(payeeReward, payeeAddress);
-        }
-
-        reward -= payeeReward;
-
-        return reward;
-    }
-
-    #endregion // Founder
     #region API-Surface
-
-    
 
     public void Init(BlockTemplate blockTemplate, string jobId,
         PoolConfig pc, BitcoinPoolConfigExtra extraPoolConfig,
@@ -325,7 +211,8 @@ public class RavencoinJob : BitcoinJob
         if(coin.HasMasterNodes)
         {
             masterNodeParameters = BlockTemplate.Extra.SafeExtensionDataAs<MasterNodeBlockTemplateExtra>();
-            
+
+           // if(coin.HasSmartNodes || (coin.Symbol == "BBC") || (coin.Symbol == "GEC") || (coin.Symbol == "GSPC"))
            if(coin.HasSmartNodes)
             {
                 if(masterNodeParameters.Extra?.ContainsKey("smartnode") == true)
