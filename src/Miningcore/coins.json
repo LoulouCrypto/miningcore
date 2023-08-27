@@ -2347,6 +2347,26 @@
         "explorerTxLink": "https://explorer.neoxa.net/tx/{0}",
         "explorerAccountLink": "https://explorer.neoxa.net/address/{0}"
     },
+    "neurai": {
+        "name": "Neurai",
+        "symbol": "XNA",
+        "family": "ravencoin",
+        "website": "https://neurai.org/",
+        "market": "https://xeggex.com/market/XNA_USDT",
+        "twitter": "https://twitter.com/neuraiproject",
+        "telegram": "https://t.me/neuraiproject",
+        "discord": "https://discord.com/invite/dxJSrSeXjF",
+        "coinbaseHasher": {
+            "hash": "sha256d"
+        },
+        "headerHasher": {
+            "hash": "sha256d"
+        },
+        "shareMultiplier": 1,
+        "explorerBlockLink": "https://explorer.neurai.org/block/$hash$",
+        "explorerTxLink": "https://explorer.neurai.org/tx/{0}",
+        "explorerAccountLink": "https://explorer.neurai.org/address/{0}"
+    },
     "novo": {
       "name": "Novo",
       "symbol": "NOVO",
