@@ -2324,20 +2324,21 @@
         "name": "Neoxa",
         "symbol": "NEOX",
         "family": "ravencoin",
-        "website": "https://neoxa.net/",
-        "market": "https://www.coingecko.com/fr/pi%C3%A8ces/neoxa",
+        "website": "https://www.neoxa.net/",
+        "market": "https://www.coingecko.com/en/coins/neoxa",
         "twitter": "https://twitter.com/NeoxaNet",
         "telegram": "https://t.me/Neoxanet",
-        "discord": "https://discord.gg/jduUnsPg",
+        "discord": "https://discord.com/invite/frYkQqrAwR",
         "coinbaseHasher": {
             "hash": "sha256d"
         },
         "headerHasher": {
             "hash": "sha256d"
         },
+        "hasCommunityAddress": true,
         "hasFounderFee": true,
         "hasMasterNodes": true,
-        "hasSmartNodes": true,
+		"hasSmartNodes": true,
         "foundersRewardAddress": [
             "GTbBCJzqRWyFBMrap2fY39eZaXnLnojJ3F"
         ],
